@@ -23,13 +23,13 @@ public static class DependencyInjection
             options.UseSqlServer(connectionString));
 
         services.AddIdentityCore<ApplicationUser>(options =>
-            {
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequiredLength = 6;
-            })
+        {
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequiredLength = 6;
+        })
             .AddRoles<IdentityRole<long>>()
             .AddEntityFrameworkStores<AppDbContext>()
             .AddSignInManager()
@@ -43,10 +43,10 @@ public static class DependencyInjection
             ?? throw new InvalidOperationException("JWT audience is not configured.");
 
         services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
             // Cookie scheme is required internally by SignInManager<ApplicationUser>
             .AddCookie(IdentityConstants.ApplicationScheme)
             .AddJwtBearer(options =>

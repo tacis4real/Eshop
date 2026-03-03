@@ -20,6 +20,13 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<long
     {
         base.OnModelCreating(builder);
 
+        // ApplicationUser
+        builder.Entity<ApplicationUser>(e =>
+        {
+            e.Property(u => u.FirstName).IsRequired().HasMaxLength(100);
+            e.Property(u => u.LastName).IsRequired().HasMaxLength(100);
+        });
+
         // Product
         builder.Entity<Product>(e =>
         {

@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shop.Domain.Entities;
+using Shop.Infrastructure.Identity;
 
 namespace Shop.Infrastructure.Persistence;
 
@@ -10,6 +12,7 @@ public static class DbInitializer
     {
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
         await context.Database.MigrateAsync();
 
@@ -31,6 +34,39 @@ public static class DbInitializer
 
             await context.Products.AddRangeAsync(products);
             await context.SaveChangesAsync();
+        }
+
+        await SeedUsersAsync(userManager);
+    }
+
+    private static async Task SeedUsersAsync(UserManager<ApplicationUser> userManager)
+    {
+        // WARNING: These are default seed credentials for development/demo. Change them before deploying to production.
+        var seedUsers = new[]
+        {
+            new { Email = "admin@shop.com", FirstName = "Admin", LastName = "User", Password = "P@ssw0rd!" },
+            new { Email = "user@shop.com",  FirstName = "Test",  LastName = "User", Password = "P@ssw0rd!" }
+        };
+
+        foreach (var seed in seedUsers)
+        {
+            if (await userManager.FindByEmailAsync(seed.Email) is not null)
+                continue;
+
+            var user = new ApplicationUser
+            {
+                UserName       = seed.Email,
+                Email          = seed.Email,
+                FirstName      = seed.FirstName,
+                LastName       = seed.LastName,
+                EmailConfirmed = true
+            };
+
+            var result = await userManager.CreateAsync(user, seed.Password);
+            if (result.Succeeded)
+                Console.WriteLine($"[DbInitializer] Seeded user: {seed.Email}");
+            else
+                Console.WriteLine($"[DbInitializer] Failed to seed user {seed.Email}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
         }
     }
 }
