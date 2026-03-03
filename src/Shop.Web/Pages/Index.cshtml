@@ -1,10 +1,45 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Shop";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="/">🛒 Shop</a>
+        <button id="logout-btn" class="btn btn-outline-light btn-sm ms-auto">Logout</button>
+    </div>
+</nav>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row g-4">
+        <!-- Products -->
+        <div class="col-md-7">
+            <h5 class="mb-3">Products</h5>
+            <div id="products-list" class="row g-3">
+                <div class="col-12 text-muted">Loading products…</div>
+            </div>
+        </div>
+
+        <!-- Cart -->
+        <div class="col-md-5">
+            <h5 class="mb-3">Your Cart</h5>
+            <div id="cart-section">
+                <p class="text-muted">Loading cart…</p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script src="~/js/app.js"></script>
+</body>
+</html>
