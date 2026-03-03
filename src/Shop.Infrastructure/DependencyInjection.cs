@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Shop.Application.Interfaces;
 using Shop.Infrastructure.Identity;
 using Shop.Infrastructure.Persistence;
+using Shop.Infrastructure.Services;
 
 namespace Shop.Infrastructure;
 
@@ -64,6 +66,9 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
+
+        services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<ICartService, CartService>();
 
         return services;
     }
