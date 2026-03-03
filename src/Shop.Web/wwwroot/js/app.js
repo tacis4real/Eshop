@@ -69,7 +69,7 @@
                 headers: authHeaders(),
                 body: JSON.stringify({ productId, quantity: 1 })
             });
-            if (res.status === 401) { redirectLogin(); return; }
+            if (handleUnauthorized(res)) return;
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
                 alert(err.message || 'Could not add item to cart.');
@@ -87,7 +87,7 @@
         const section = document.getElementById('cart-section');
         try {
             const res = await fetch('/api/cart', { headers: authHeaders() });
-            if (res.status === 401) { redirectLogin(); return; }
+            if (handleUnauthorized(res)) return;
             if (!res.ok) throw new Error('Failed to load cart');
             const cart = await res.json();
             renderCart(cart);
@@ -145,7 +145,7 @@
                 headers: authHeaders(),
                 body: JSON.stringify({ quantity })
             });
-            if (res.status === 401) { redirectLogin(); return; }
+            if (handleUnauthorized(res)) return;
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
                 alert(err.message || 'Could not update item.');
@@ -164,7 +164,7 @@
                 method: 'DELETE',
                 headers: authHeaders()
             });
-            if (res.status === 401) { redirectLogin(); return; }
+            if (handleUnauthorized(res)) return;
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
                 alert(err.message || 'Could not remove item.');
@@ -179,9 +179,13 @@
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    function redirectLogin() {
-        localStorage.removeItem(TOKEN_KEY);
-        window.location.href = '/login';
+    function handleUnauthorized(res) {
+        if (res.status === 401) {
+            localStorage.removeItem(TOKEN_KEY);
+            window.location.href = '/login';
+            return true;
+        }
+        return false;
     }
 
     function escHtml(str) {

@@ -56,7 +56,8 @@ public class AuthController : ControllerBase
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var expMinutes = int.Parse(_configuration["Jwt:ExpMinutes"] ?? "60");
+        if (!int.TryParse(_configuration["Jwt:ExpMinutes"], out var expMinutes))
+            expMinutes = 60;
 
         var claims = new[]
         {
